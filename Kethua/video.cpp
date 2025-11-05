@@ -1,5 +1,7 @@
 #include <iostream>
+#include <cmath>
 using namespace std;
+const float pi = 3.1415;
 
 // lop cha
 class HCN 
@@ -53,14 +55,39 @@ public:
         dai = _dai;
         rong = _rong;
     }
-    float dt()
+    float DT()
     {
         return dai*rong;
     }
 };
 
+class HT
+{
+    float canh, goc;
+public:
+    HT (float _canh = 0, float _goc = 0)
+    {
+        canh = _canh;
+        goc = _goc;
+    }
+    HT (HT &h)
+    {
+        canh = h.canh;
+        goc = h.goc;
+    }
+    void Set (float _canh = 0, float _goc = 0)
+    {
+        canh = _canh;
+        goc = _goc;
+    }
+    float DT()
+    {
+        return canh*canh*sin(goc*pi/180);
+    }
+};
+
 // lop con
-class HV : public HCN
+class HV : public HCN, public HT
 {
     float canh;
 public:
@@ -77,12 +104,14 @@ public:
     HV (float _canh=0)
     {
         canh = _canh;
-        //HCN::Set(canh, canh); 
+        HCN::Set(canh, canh); 
+        HT::Set(canh, 90);
     }
     HV (const HV &h)
     {
         canh = h.canh;
         HCN::Set(canh, canh);
+        HT::Set(canh, 90);
     }
     ~HV() {};
     // overloading
@@ -100,7 +129,8 @@ public:
     void Set (float _canh = 0)
     {
         canh = _canh;
-        HCN::Set(canh, canh)
+        HCN::Set(canh, canh);
+        HT::Set(canh, 90);
     }
     /*
     float dt()
@@ -109,8 +139,11 @@ public:
     }
     */
 };
-
+// Khởi tạo: Cha -> Con
+// Hủy: Con -> Cha
 int main()
 {
+    HV hv(4);
+    cout<<hv.HCN::DT(); // Kế thừa bội phải chỉ rõ lớp cần kế thừa 
     return 0;
 }
